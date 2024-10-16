@@ -11,6 +11,7 @@ Infinity Events is a Java-based application developed to demonstrate my skills i
 - **Concurrency Management with Akka:** Utilizing Akka's Actor model to handle concurrency, enabling asynchronous processing, scalability, and resilience.
 - **Notifications via Email and SMS:** Sending notifications to users through email and SMS for important events and updates.
 - **Error Log Management with Sentry:** Integrating Sentry for real-time error tracking and logging, helping to identify and resolve issues quickly.
+- **Testing:** Implementing unit and integration tests to ensure code quality and reliability, using frameworks such as JUnit and Mockito.
 - **Docker & Kubernetes Deployment:** Containerizing the application for consistent deployment across various environments using Docker, and orchestrating it with Kubernetes for scalability and management.
 
 ## Technologies Used
@@ -27,6 +28,7 @@ Infinity Events is a Java-based application developed to demonstrate my skills i
 - Akka
 - Google Cloud Storage
 - Sentry for error logging and monitoring
+- JUnit and Mockito for testing
 
 ## Getting Started
 
