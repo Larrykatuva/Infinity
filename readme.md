@@ -23,7 +23,7 @@ Infinity Events is a Java-based application developed to demonstrate my skills i
 - Docker
 - Kubernetes
 - AWS (S3 Bucket and CloudFront)
-- Email/SMS Services (e.g., Jambopay for SMS, SMTP for email)
+- Email/SMS Services (e.g. Jambopay for SMS, SMTP for email)
 - Akka
 - Google Cloud Storage
 - Sentry for error logging and monitoring
