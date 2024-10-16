@@ -38,7 +38,7 @@ Infinity Events is a Java-based application developed to demonstrate my skills i
    
 2. **Navigate to the project directory:**
     ```bash
-   cd infinity-events
+   cd infinity
 
 3. **Build and run the application using Docker:**
     ```bash
