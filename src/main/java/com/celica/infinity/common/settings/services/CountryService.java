@@ -60,7 +60,9 @@ public class CountryService {
     }
 
     public CountryDto getCountry(Long id) {
-        var country = countryRepository.findById(id).orElseThrow();
+        var country = countryRepository.findById(id).orElseThrow(
+                () -> new BadRequestException("Country not found", "Country matching the id not found")
+        );
         return countryToDto(country);
     }
 
