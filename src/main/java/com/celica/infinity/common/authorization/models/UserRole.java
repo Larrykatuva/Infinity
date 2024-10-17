@@ -1,0 +1,56 @@
+package com.celica.infinity.common.authorization.models;
+
+import com.celica.infinity.common.auth.models.User;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(
+        name = "user_roles",
+        uniqueConstraints = @UniqueConstraint(
+                columnNames = {"user", "role"}
+        )
+)
+public class UserRole {
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "user", nullable = false)
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "role", nullable = false)
+    private Role role;
+
+    @Column(nullable = false)
+    private Boolean active = true;
+
+    @ManyToOne
+    @JoinColumn(name = "assignedBy")
+    private User assignedBy;
+
+    @ManyToOne
+    @JoinColumn(name = "revokedBy")
+    private User revokedBy;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+}
