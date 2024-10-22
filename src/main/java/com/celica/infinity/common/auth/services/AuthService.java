@@ -4,6 +4,7 @@ import com.celica.infinity.common.auth.dtos.requests.*;
 import com.celica.infinity.common.auth.dtos.response.LoginResponseDto;
 import com.celica.infinity.common.auth.dtos.response.TokenResponseDto;
 import com.celica.infinity.common.auth.enums.Context;
+import com.celica.infinity.common.auth.mappers.UserMapper;
 import com.celica.infinity.common.auth.models.Code;
 import com.celica.infinity.common.auth.models.User;
 import com.celica.infinity.utils.Utils;

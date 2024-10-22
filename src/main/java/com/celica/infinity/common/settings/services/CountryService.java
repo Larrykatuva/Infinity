@@ -3,20 +3,14 @@ package com.celica.infinity.common.settings.services;
 import com.celica.infinity.common.settings.dtos.requests.CreateCountryDto;
 import com.celica.infinity.common.settings.dtos.requests.UpdateCountryDto;
 import com.celica.infinity.common.settings.dtos.responses.CountryDto;
-import com.celica.infinity.common.settings.models.Country;
+import com.celica.infinity.common.settings.mappers.CountryMapper;
 import com.celica.infinity.common.settings.repositories.CountryRepository;
-import com.celica.infinity.utils.exceptions.BadRequestException;
 import com.celica.infinity.utils.annotations.pagination.dtos.PaginatedResponseDto;
+import com.celica.infinity.utils.exceptions.BadRequestException;
 import com.celica.infinity.utils.storage.StorageService;
 import jakarta.transaction.Transactional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Service
 @Transactional
@@ -24,29 +18,24 @@ public class CountryService {
 
     private final CountryRepository countryRepository;
     private final StorageService storageService;
-    private final Logger logger = LoggerFactory.getLogger(CountryService.class);
+    private final CountryMapper countryMapper;
 
     public CountryService(
             CountryRepository countryRepository,
-            StorageService storageService
+            StorageService storageService,
+            CountryMapper countryMapper
     ){
         this.storageService = storageService;
         this.countryRepository = countryRepository;
+        this.countryMapper = countryMapper;
     }
 
     public CountryDto registerCountry(CreateCountryDto countryDto) {
         String fileName = storageService.getFilename(countryDto.getLogo());
-        var country = Country.builder()
-                .name(countryDto.getName())
-                .shortForm(countryDto.getShortForm())
-                .currency(countryDto.getCurrency())
-                .code(countryDto.getCode())
-                .timezone(countryDto.getTimezone())
-                .logo(fileName)
-                .build();
+        var country = countryMapper.toCountry(countryDto, fileName);
         countryRepository.save(country);
         storageService.saveFile(countryDto.getLogo(), fileName);
-        return countryToDto(country);
+        return countryMapper.toCountryDto(country);
     }
 
     public PaginatedResponseDto<CountryDto> getCountries(PageRequest pageRequest) {
@@ -55,7 +44,7 @@ public class CountryService {
                         countries.getTotalElements(),
                         countries.getNumber(),
                         countries.getTotalPages(),
-                        countryToDto(countries.getContent())
+                        countryMapper.toCountryDtoList(countries.getContent())
                 );
     }
 
@@ -63,7 +52,7 @@ public class CountryService {
         var country = countryRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("Country not found", "Country matching the id not found")
         );
-        return countryToDto(country);
+        return countryMapper.toCountryDto(country);
     }
 
     public CountryDto updateCountry(Long id, UpdateCountryDto updateCountryDto) {
@@ -87,19 +76,8 @@ public class CountryService {
         }
         if (!update) throw new BadRequestException("Nothing to update", "No changes detected");
         countryRepository.save(country);
-        return countryToDto(country);
+        return countryMapper.toCountryDto(country);
     }
 
-    public CountryDto countryToDto(Country country) {
-        return new CountryDto(country.getName(), country.getShortForm(), country.getCurrency(), country.getCode(),
-                country.getTimezone(), country.getId(), country.isActive(),
-                storageService.getFileUrl(country.getLogo()), country.getCreatedAt());
-    }
-
-    public List<CountryDto> countryToDto(Collection<Country> countryList) {
-        List<CountryDto> countryDtoList = new ArrayList<>();
-        countryList.forEach(country -> countryDtoList.add(countryToDto(country)));
-        return countryDtoList;
-    }
 }
 

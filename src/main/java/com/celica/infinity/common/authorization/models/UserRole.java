@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "user_roles",
         uniqueConstraints = @UniqueConstraint(
-                columnNames = {"user", "role"}
+                columnNames = {"user_id", "role_id"}
         )
 )
 public class UserRole {
@@ -28,22 +28,22 @@ public class UserRole {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "role", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Column(nullable = false)
     private Boolean active = true;
 
     @ManyToOne
-    @JoinColumn(name = "assignedBy")
+    @JoinColumn(name = "assigned_by")
     private User assignedBy;
 
     @ManyToOne
-    @JoinColumn(name = "revokedBy")
+    @JoinColumn(name = "revoked_by")
     private User revokedBy;
 
     @CreationTimestamp
