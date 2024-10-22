@@ -3,6 +3,7 @@ package com.celica.infinity.common.authorization.services;
 import com.celica.infinity.common.auth.models.User;
 import com.celica.infinity.common.authorization.dtos.requests.RoleRequestDto;
 import com.celica.infinity.common.authorization.dtos.responses.RoleDto;
+import com.celica.infinity.common.authorization.mappers.RoleMapper;
 import com.celica.infinity.common.authorization.models.Role;
 import com.celica.infinity.common.authorization.repositories.RoleRepository;
 import com.celica.infinity.utils.annotations.pagination.dtos.PaginatedResponseDto;
@@ -12,9 +13,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,9 +20,14 @@ import java.util.Optional;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
 
-    public RoleService(RoleRepository roleRepository) {
+    public RoleService(
+            RoleRepository roleRepository,
+            RoleMapper roleMapper
+    ) {
         this.roleRepository = roleRepository;
+        this.roleMapper = roleMapper;
     }
 
     public MessageResponseDto createRole(RoleRequestDto roleDto, User user) {
@@ -45,7 +48,7 @@ public class RoleService {
                 roles.getTotalElements(),
                 roles.getNumber(),
                 roles.getTotalPages(),
-                roleToDto(roles.getContent())
+                roleMapper.toRoleDtoList(roles.getContent())
         );
     }
 
@@ -69,16 +72,7 @@ public class RoleService {
         Role role = roleRepository.findById(id).orElseThrow(
                 () -> new BadRequestException("Role not found", "Role matching the id not found")
         );
-        return roleToDto(role);
+        return roleMapper.toRoleDto(role);
     }
 
-    public RoleDto roleToDto(Role role) {
-        return new RoleDto(role.getId(), role.getName(), role.getActive(), role.getCreatedAt(), role.getUpdatedAt());
-    }
-
-    private List<RoleDto> roleToDto(Collection<Role> roles){
-        List<RoleDto> roleDtoList = new ArrayList<>();
-        roles.forEach(role -> roleDtoList.add(roleToDto(role)));
-        return roleDtoList;
-    }
 }

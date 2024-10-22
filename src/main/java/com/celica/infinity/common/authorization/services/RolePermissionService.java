@@ -2,6 +2,7 @@ package com.celica.infinity.common.authorization.services;
 
 import com.celica.infinity.common.auth.models.User;
 import com.celica.infinity.common.authorization.dtos.responses.PermissionDto;
+import com.celica.infinity.common.authorization.mappers.RolePermissionMapper;
 import com.celica.infinity.common.authorization.models.Permission;
 import com.celica.infinity.common.authorization.models.Role;
 import com.celica.infinity.common.authorization.models.RolePermission;
@@ -13,9 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -23,14 +21,14 @@ import java.util.Optional;
 public class RolePermissionService {
 
     private final RolePermissionRepository rolePermissionRepository;
-    private final PermissionService permissionService;
+    private final RolePermissionMapper rolePermissionMapper;
 
     public RolePermissionService(
             RolePermissionRepository rolePermissionRepository,
-            PermissionService permissionService
+            RolePermissionMapper rolePermissionMapper
     ){
         this.rolePermissionRepository = rolePermissionRepository;
-        this.permissionService = permissionService;
+        this.rolePermissionMapper = rolePermissionMapper;
     }
 
     public MessageResponseDto addPermissionToRole(Permission permission, Role role, User user) {
@@ -69,15 +67,7 @@ public class RolePermissionService {
                 rolePermissions.getTotalElements(),
                 rolePermissions.getNumber(),
                 rolePermissions.getTotalPages(),
-                permissionDtoList(rolePermissions.getContent())
+                rolePermissionMapper.toPermissionDtoList(rolePermissions.getContent())
         );
-    }
-
-    private List<PermissionDto> permissionDtoList(Collection<RolePermission> rolePermissions) {
-        List<PermissionDto> permissionDtoList = new ArrayList<>();
-        rolePermissions.forEach(rolePermission -> permissionDtoList.add(
-                permissionService.permissionToDto(rolePermission.getPermission())
-        ));
-        return permissionDtoList;
     }
 }

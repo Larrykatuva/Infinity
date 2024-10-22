@@ -1,11 +1,8 @@
 package com.celica.infinity.common.authorization.services;
 
-import com.celica.infinity.common.auth.dtos.response.UserResponseDto;
 import com.celica.infinity.common.auth.models.User;
 import com.celica.infinity.common.auth.repositories.UserRepository;
-import com.celica.infinity.common.auth.services.UserService;
 import com.celica.infinity.common.authorization.dtos.requests.AssignRoleRequestDto;
-import com.celica.infinity.common.authorization.dtos.responses.RoleDto;
 import com.celica.infinity.common.authorization.models.Role;
 import com.celica.infinity.common.authorization.models.UserRole;
 import com.celica.infinity.common.authorization.repositories.RoleRepository;
@@ -15,9 +12,6 @@ import com.celica.infinity.utils.exceptions.BadRequestException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,21 +21,15 @@ public class UserRoleService {
     private final UserRoleRepository userRoleRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final RoleService roleService;
-    private final UserService userService;
 
     public UserRoleService(
             UserRoleRepository userRoleRepository,
             UserRepository userRepository,
-            RoleRepository roleRepository,
-            RoleService roleService,
-            UserService userService
+            RoleRepository roleRepository
     ){
         this.userRoleRepository = userRoleRepository;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.roleService = roleService;
-        this.userService = userService;
     }
 
     public MessageResponseDto assignRole(AssignRoleRequestDto assignDto, Long userId, User actionUser) {
@@ -79,17 +67,5 @@ public class UserRoleService {
             default -> throw new BadRequestException("Invalid action", "Action type could not be processed");
         }
         return new MessageResponseDto(message);
-    }
-
-    private List<RoleDto> roleToDto(Collection<UserRole> userRoles) {
-        List<RoleDto> roleDtoList = new ArrayList<>();
-        userRoles.forEach(userRole -> roleService.roleToDto(userRole.getRole()));
-        return roleDtoList;
-    }
-
-    private List<UserResponseDto> userToDto(Collection<UserRole> userRoles) {
-        List<UserResponseDto> userResponseDtoList = new ArrayList<>();
-        userRoles.forEach(userRole -> userService.userToDto(userRole.getUser()));
-        return userResponseDtoList;
     }
 }
